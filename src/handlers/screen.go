@@ -6,7 +6,6 @@ import (
 	. "../utility"
 
 	"encoding/json"
-	"log"
 	"net/http"
 	// "time"
 
@@ -25,11 +24,6 @@ func (this *AppContext) Request(c *gin.Context) {
 	var v interface{}
 	err := json.NewDecoder(c.Request.Body).Decode(&v)
 	GinErrCheck(err, c)
-
-	//	var json_log models.Activitylog
-	//	err := c.BindJSON(json_log)
-
-	//	log.Println(json_log)
 
 	body, err := json.Marshal(v)
 	GinErrCheck(err, c)
