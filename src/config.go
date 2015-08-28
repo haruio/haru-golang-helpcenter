@@ -7,5 +7,5 @@ const (
 	NAMESPACE = "st"
 
 	SPLUNK_PROTOCOL = "tcp"
-	SPLUNK_ADDR     = "52.76.9.86:9998"
+	SPLUNK_ADDR     = "127.0.0.1:9998"
 )
