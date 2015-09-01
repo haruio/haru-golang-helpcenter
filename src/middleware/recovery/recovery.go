@@ -40,6 +40,8 @@ func NewRecoveryWithWriter(out io.Writer) gin.HandlerFunc {
 
 					stack := stack(3)
 					fmt.Fprintf(w, "Panic recovery -> %s\n%s\n", err, stack)
+					w.WriteTo(out)
+					pool.Put(w)
 				}
 				c.JSON(http.StatusInternalServerError, gin.H{"Status": err})
 			}
