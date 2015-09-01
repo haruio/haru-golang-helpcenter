@@ -19,7 +19,7 @@ func ParamCheck(key string, c *gin.Context) string {
 
 func GinErrCheck(err error, c *gin.Context) {
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"Statues": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"Status": err})
 		log.Panic(err.Error())
 	}
 }
