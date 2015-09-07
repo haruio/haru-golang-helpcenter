@@ -1,9 +1,6 @@
 package main
 
 import (
-	//"./src/database/Splunk"
-	"bitbucket.org/makeusmobile/makeus-golang-framework/src/handlers/activity_handler"
-
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/config"
 
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
@@ -14,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"runtime"
-	"time"
 
 	"github.com/DeanThompson/ginpprof"
 	"github.com/HyeJong/profiler"
@@ -39,11 +35,6 @@ func main() {
 	router.Use(cors.Middleware(config.CORS_CONFIG))
 	//router.Use(gzip.Gzip(gzip.DefaultCompression))	// gzip
 
-	v1 := router.Group("/singapore")
-	{
-		v1.POST("/screen", activity_handler.Request)
-	}
-
 	// profiler for gin
 	profiler.AddMemoryProfilingHandlers(router)
 	// gclogs for gin
@@ -52,19 +43,7 @@ func main() {
 	// e.g. /debug/pprof, /debug/pprof/heap, etc.
 	ginpprof.Wrapper(router)
 
-	// Listen and server on 0.0.0.0:9090
-	ser := func() error {
-		s := &http.Server{
-			Addr:           ":9090",
-			Handler:        router,
-			ReadTimeout:    5 * time.Second,
-			WriteTimeout:   5 * time.Second,
-			MaxHeaderBytes: 1 << 20,
-		}
-		return s.ListenAndServe()
-	}
-
-	if err := ser(); err != nil {
+	if err := config.Server(router); err != nil {
 		log.Println(err)
 	}
 }

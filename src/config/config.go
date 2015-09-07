@@ -26,3 +26,14 @@ var CORS_CONFIG = cors.Config{
 	Credentials:     true,
 	ValidateHeaders: false,
 }
+
+func Server(router *gin.Engine) error {
+	s := &http.Server{
+		Addr:           ":9090",
+		Handler:        router,
+		ReadTimeout:    5 * time.Second,
+		WriteTimeout:   5 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	return s.ListenAndServe()
+}
