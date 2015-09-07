@@ -1,10 +1,10 @@
 package Splunk
 
 import (
-	"net"
-
-	"../../../src/config"
+	"../../../src"
 	. "../../utility"
+
+	"net"
 )
 
 type Splunk struct {
