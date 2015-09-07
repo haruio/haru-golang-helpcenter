@@ -3,12 +3,12 @@ package Splunk
 import (
 	"testing"
 
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	//"github.com/gin-gonic/gin"
+	//"github.com/stretchr/testify/assert"
 )
 
 func TestRequest(t *testing.T) {
-	router := gin.New()
+	//router := gin.New()
 
 	// router.addRoute("GET", "/singapore/screen", HandlersChain{func(_ *Context) {}})
 

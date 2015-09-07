@@ -2,14 +2,14 @@ package main
 
 import (
 	//"./src/database/Splunk"
-	"./src/handlers/activity_handler"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/handlers/activity_handler"
 
-	"./src/config"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/config"
 
-	"./src/middleware/commonlog"
-	"./src/middleware/cors"
-	"./src/middleware/debug"
-	"./src/middleware/recovery"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/cors"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/debug"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/recovery"
 
 	"log"
 	"net/http"

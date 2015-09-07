@@ -2,7 +2,7 @@
 package config
 
 import (
-	"../middleware/cors"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/cors"
 	"time"
 )
 

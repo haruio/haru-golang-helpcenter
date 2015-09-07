@@ -1,8 +1,8 @@
 package Splunk
 
 import (
-	"../../../src"
-	. "../../utility"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/config"
+	. "bitbucket.org/makeusmobile/makeus-golang-framework/src/utility"
 
 	"net"
 )

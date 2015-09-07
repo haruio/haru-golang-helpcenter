@@ -1,9 +1,9 @@
 package activity_handler
 
 import (
-	"../../data_store/Splunk"
-	"../../models"
-	. "../../utility"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/data_store/Splunk"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/models"
+	. "bitbucket.org/makeusmobile/makeus-golang-framework/src/utility"
 
 	"encoding/json"
 	"net/http"
