@@ -3,7 +3,11 @@ package config
 
 import (
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/cors"
+
+	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
