@@ -1,9 +1,17 @@
-package utillity
+package utility
 
 import (
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/config"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/cors"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/debug"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/recovery"
+
 	"log"
 	"net/http"
 
+	"github.com/DeanThompson/ginpprof"
+	"github.com/HyeJong/profiler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,4 +36,24 @@ func ErrCheck(err error) {
 	if err != nil {
 		log.Panic(err.Error())
 	}
+}
+
+func InitMiddleware(router *gin.Engine) {
+	router.Use(commonlog.Logger())
+	router.Use(recovery.Recovery())
+	router.Use(cors.Middleware(config.CORS_CONFIG))
+	//router.Use(gzip.Gzip(gzip.DefaultCompression))	// gzip
+}
+
+func InitDebug(router *gin.Engine) {
+
+	// gclogs for gin
+	router.GET("/debug/vars", debug.Handler())
+
+	// profiler for gin
+	profiler.AddMemoryProfilingHandlers(router)
+
+	// automatically add routers for net/http/pprof
+	// e.g. /debug/pprof, /debug/pprof/heap, etc.
+	ginpprof.Wrapper(router)
 }
