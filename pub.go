@@ -4,7 +4,7 @@ import (
 	//"./src/database/Splunk"
 	"./src/handlers/activity_handler"
 
-	"./src"
+	"./src/config"
 
 	"./src/middleware/commonlog"
 	"./src/middleware/cors"
