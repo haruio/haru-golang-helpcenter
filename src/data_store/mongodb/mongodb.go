@@ -17,12 +17,16 @@ type MongoDB struct {
 var Instantiated *MongoDB = nil
 
 func InitMongoDB() *mgo.Session {
+
 	mongodb := config.MONGODB_ADDR
 	session, err := mgo.Dial(mongodb)
+
 	if err != nil {
-		panic(error.ErrNotFountInstant)
+		log.panic(error.ErrNotFountInstant)
 	}
-	Instantiated = session
+
+	Instantiated.Session = session
+
 	return session
 }
 

@@ -60,7 +60,7 @@ func NewWithWriter(out io.Writer) gin.HandlerFunc {
 			if pool != nil {
 				w := pool.Get().(*bytes.Buffer)
 
-				w.WriteString(end.Format("2006-01-02 - 15:04:05.999999"))
+				w.WriteString(end.Format("2006-01-02  15:04:05.999999"))
 				w.WriteString("\t |")
 				w.WriteString(statusColor)
 				w.WriteString(strconv.Itoa(statusCode))
@@ -79,7 +79,7 @@ func NewWithWriter(out io.Writer) gin.HandlerFunc {
 				w.WriteString(" ")
 				w.WriteString(path)
 				w.WriteString(" ")
-				w.WriteString("\t Size ")
+				w.WriteString("\t Request Size ")
 				w.WriteString(strconv.Itoa(size))
 				w.WriteString("\n")
 				w.WriteTo(out)

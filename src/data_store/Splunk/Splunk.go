@@ -1,4 +1,4 @@
-package Splunk
+package splunk
 
 import (
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/config"

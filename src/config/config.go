@@ -15,6 +15,19 @@ const (
 
 	SPLUNK_PROTOCOL = "tcp"
 	SPLUNK_ADDR     = "127.0.0.1:9998"
+
+	MONGODB_ADDR = "127.0.0.1:27017"
+
+	RDB_TYPE = "mysql"
+	RDB_ADDR = ""
+	// The Data Source Name has a common format, like e.g. PEAR DB uses it, but without type-prefix
+	// 	- [username[:password]@][protocol[(address)]]/dbname[?param1=value1&...&paramN=valueN]
+	// example
+	// 	- user@unix(/path/to/socket)/dbname?charset=utf8
+	// 	- user:password@tcp(localhost:5555)/dbname?charset=utf8
+	// 	- user:password@/dbname
+	// 	- user:password@tcp([de:ad:be:ef::ca:fe]:80)/dbname
+
 )
 
 var CORS_CONFIG = cors.Config{

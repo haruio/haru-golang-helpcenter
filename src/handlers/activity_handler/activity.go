@@ -39,17 +39,3 @@ func (this *AppContext) Request(c *gin.Context) {
 func (this *AppContext) Close() {
 	this.Splk.Close()
 }
-
-func Request(c *gin.Context) {
-
-	var json models.Activitylog
-
-	err := c.BindJSON(&json)
-	GinErrCheck(err, c)
-	debug.PrintStack()
-	if err := validator.Validate(json); err != nil {
-		GinErrCheck(err, c)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"test": json})
-}

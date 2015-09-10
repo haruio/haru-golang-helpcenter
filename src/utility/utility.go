@@ -5,6 +5,7 @@ import (
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/cors"
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/debug"
+	//"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/gzip"
 	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/recovery"
 
 	"log"
@@ -39,13 +40,13 @@ func ErrCheck(err error) {
 }
 
 func InitMiddleware(router *gin.Engine) {
-	router.Use(commonlog.Logger())
-	router.Use(recovery.Recovery())
-	router.Use(cors.Middleware(config.CORS_CONFIG))
-	//router.Use(gzip.Gzip(gzip.DefaultCompression))	// gzip
+	router.Use(commonlog.Logger())                  // logger
+	router.Use(recovery.Recovery())                 // recover
+	router.Use(cors.Middleware(config.CORS_CONFIG)) // cors
+	//router.Use(gzip.Gzip(gzip.BestCompression))     // gzip
 }
 
-func InitDebug(router *gin.Engine) {
+func InitDebuger(router *gin.Engine) {
 
 	// gclogs for gin
 	router.GET("/debug/vars", debug.Handler())
@@ -53,7 +54,7 @@ func InitDebug(router *gin.Engine) {
 	// profiler for gin
 	profiler.AddMemoryProfilingHandlers(router)
 
-	// automatically add routers for net/http/pprof
+	// automatically add routers for net/http/pproff
 	// e.g. /debug/pprof, /debug/pprof/heap, etc.
 	ginpprof.Wrapper(router)
 }

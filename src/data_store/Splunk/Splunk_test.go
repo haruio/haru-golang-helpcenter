@@ -1,4 +1,4 @@
-package Splunk
+package splunk
 
 import (
 	"testing"

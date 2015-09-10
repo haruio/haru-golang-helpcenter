@@ -19,6 +19,19 @@ package activity_handler
 // 			}
 // 			if rval := recover(); rval != nil {
 // 				debug.PrintStack()
+
+// 				switch err {
+//     case bufio.ErrNegativeCount:
+//         // Do something specific.
+//         return
+//     case bufio.ErrBufferFull:
+//         // Do something specific.
+//         return
+//     default:
+//         // Do something generic.
+//         return
+//     }
+
 // 				rvalStr := fmt.Sprint(rval)
 // 				packet := raven.NewPacket(rvalStr, raven.NewException(errors.New(rvalStr), raven.NewStacktrace(2, 3, nil)))
 // 				client.Capture(packet, map[string]string{
