@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,12 +42,13 @@ var CORS_CONFIG = cors.Config{
 }
 
 func Server(router *gin.Engine) error {
-	s := &http.Server{
-		Addr:           ":9090",
-		Handler:        router,
-		ReadTimeout:    5 * time.Second,
-		WriteTimeout:   5 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	return s.ListenAndServe()
+	s := gracehttp.Serve(
+		&http.Server{
+			Addr:           ":9090",
+			Handler:        router,
+			ReadTimeout:    5 * time.Second,
+			WriteTimeout:   5 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		})
+	return s
 }
