@@ -6,6 +6,7 @@ import (
 
 	"log"
 	"net/http"
+	"os"
 	"runtime"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,11 @@ func handler02(c *gin.Context) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	file, err := os.OpenFile("pub.log", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0777)
+	if err != nil {
+		panic(err)
+	}
+	log.SetOutput(file)
 	//Create AppContext(rabbitmq)
 	// appC := handlers.AppContext{Splk: Splunk.SplunkInit()}
 	// defer appC.Close()
