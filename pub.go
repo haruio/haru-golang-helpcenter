@@ -9,6 +9,7 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/facebookgo/cmdctrl"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +25,7 @@ func handler02(c *gin.Context) {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	cmdctrl.SimpleStart()
 
 	file, err := os.OpenFile("pub.log", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0777)
 	if err != nil {
