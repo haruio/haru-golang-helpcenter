@@ -17,7 +17,7 @@ type Couchbase struct {
 }
 
 // Global instance
-var Instantiated = &Couchbase{Bucket: nil}
+var Instance = &Couchbase{Bucket: nil}
 
 func InitCouchbase() *gocb.Bucket {
 
@@ -31,7 +31,7 @@ func InitCouchbase() *gocb.Bucket {
 		log.Panic(error.ErrNotFountInstant)
 	}
 
-	Instantiated.Bucket = myBucket
+	Instance.Bucket = myBucket
 
 	SetLogger(LogStdOutLogger()) //couchbase internal package enable logger("log" package)
 
@@ -41,11 +41,11 @@ func InitCouchbase() *gocb.Bucket {
 func Connector(next gin.HandlerFunc) gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
 
-		if Instantiated.Bucket != nil {
+		if Instance.Bucket != nil {
 			log.Panic(error.ErrNotFountInstant)
 		}
 
-		c.Set("couchbase", Instantiated.Bucket)
+		c.Set("couchbase", Instance.Bucket)
 
 		next(c)
 	})

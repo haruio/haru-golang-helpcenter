@@ -10,11 +10,13 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// MongoDB is struct for singleton
 type MongoDB struct {
 	Session *mgo.Session // Session
 }
 
-var Instantiated *MongoDB = nil
+// Global instance
+var Instance = MongoDB{Session: nil}
 
 func InitMongoDB() *mgo.Session {
 
@@ -25,7 +27,7 @@ func InitMongoDB() *mgo.Session {
 		log.panic(error.ErrNotFountInstant)
 	}
 
-	Instantiated.Session = session
+	Instance.Session = session
 
 	return session
 }
@@ -33,11 +35,11 @@ func InitMongoDB() *mgo.Session {
 func connector(next gin.HandlerFunc) gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
 
-		if Instantiated.Session != nil {
+		if Instance.Session != nil {
 			log.panic(error.ErrNotFountInstant)
 		}
 
-		s := Instantiated.Session.Clone()
+		s := Instance.Session.Clone()
 		defer s.Close()
 		c.Set("mongodb", s)
 

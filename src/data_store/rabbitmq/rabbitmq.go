@@ -12,11 +12,11 @@ type Rabbitmq struct {
 	Channel *amqp.Channel    // Channel
 }
 
-var Instantiated *Rabbitmq = nil
+var Instance = &Rabbitmq{Conn: nil, Channel: nil}
 
 func PublisherInit() *amqp.Channel {
 
-	conn, err := amqp.Dial(config.RABBITMQ)
+	conn, err := amqp.Dial(config.RABBITMQ_ADDR)
 	ErrCheck(err)
 
 	ch, err := conn.Channel()
@@ -32,14 +32,14 @@ func PublisherInit() *amqp.Channel {
 	)
 	ErrCheck(err)
 
-	Instantiated = &Rabbitmq{Conn: conn, Channel: ch}
+	Instance = &Rabbitmq{Conn: conn, Channel: ch}
 
 	return ch
 }
 
 func SubscriberInit() <-chan amqp.Delivery {
 
-	conn, err := amqp.Dial(config.RABBITMQ)
+	conn, err := amqp.Dial(config.RABBITMQ_ADDR)
 	ErrCheck(err)
 
 	ch, err := conn.Channel()
@@ -57,12 +57,12 @@ func SubscriberInit() <-chan amqp.Delivery {
 
 	ErrCheck(err)
 
-	Instantiated = &Rabbitmq{Conn: conn, Channel: ch}
+	Instance = &Rabbitmq{Conn: conn, Channel: ch}
 
 	return msgs
 }
 
 func Close() {
-	Instantiated.Channel.Close()
-	Instantiated.Conn.Close()
+	Instance.Channel.Close()
+	Instance.Conn.Close()
 }
