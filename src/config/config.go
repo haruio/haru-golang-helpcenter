@@ -29,6 +29,12 @@ const (
 	// 	- user:password@/dbname
 	// 	- user:password@tcp([de:ad:be:ef::ca:fe]:80)/dbname
 
+	COUCHBASE_ADDR       = "couchbase://127.0.0.1"
+	COUCHBASE_BUCKETNAME = "beer-sample"
+	COUCHBASE_PASSWORD   = ""
+
+	RABBITMQ_ADDR      = "amqp://guest:guest@localhost:5672/"
+	RABBITMQ_QUEUENAME = "Queue"
 )
 
 var CORS_CONFIG = cors.Config{
