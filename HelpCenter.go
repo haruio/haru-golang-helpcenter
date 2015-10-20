@@ -12,7 +12,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsjamie/gin-cors"
+
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
+	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/recovery"
 )
+
+func InitMiddleware(router *gin.Engine) {
+	router.Use(commonlog.Logger())  // logger
+	router.Use(recovery.Recovery()) // recover
+}
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -36,13 +44,6 @@ func main() {
 		ValidateHeaders: false,
 	}))
 
-	//Simple group: Upload music
-	// v1 := router.Group("/push")
-	// {
-	// 	v1.GET("/:pushid/ack/:status", appC.Request)
-	// }
-
-	//Listen and server on 0.0.0.0:9090
 	s := &http.Server{
 		Addr:           ":9090",
 		Handler:        router,
