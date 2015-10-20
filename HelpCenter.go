@@ -1,15 +1,11 @@
 package main
 
 import (
-	"./src/controllers"
-	"./src/encoding"
-	"./src/models"
-	"./src/utility"
-
 	"log"
 	"net/http"
 	"runtime"
 
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/gin-gonic/gin"
 	"github.com/itsjamie/gin-cors"
 
@@ -44,15 +40,15 @@ func main() {
 		ValidateHeaders: false,
 	}))
 
-	s := &http.Server{
-		Addr:           ":9090",
-		Handler:        router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
+	err := gracehttp.Serve(
+		&http.Server{
+			Addr:           ":9090",
+			Handler:        router,
+			ReadTimeout:    5 * time.Second,
+			WriteTimeout:   5 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		})
 
-	err := s.ListenAndServe()
 	if err != nil {
 		log.Println(err)
 	}
