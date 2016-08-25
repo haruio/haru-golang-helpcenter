@@ -30,7 +30,8 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	//Webframework gin-tonic Init
-	router := gin.Default()
+	router := gin.New()
+	InitMiddleware(router)
 
 	router.Use(cors.Middleware(cors.Config{
 		Origins:         "*",
