@@ -2,81 +2,35 @@ package models
 
 import (
 	"../../src"
-
-	"log"
-
-	"github.com/gin-gonic/gin"
+	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2"
 )
 
-// type Database interface {
-// 	// Insert(CollectionName string, docs ...interface{}) error
-// 	// db.C("notice").Find(bson.M{}).All(&notices)
-// 	// Get(id int) *Notice
-// 	// GetAll() []*Notice
-// 	// Find(band, title string, year int) []*Notice
-// 	// Add(a *Notice) (int, error)
-// 	// Update(a *Notice) error
-// 	// Delete(id int)
-// 	GetInstance() *mgo.Database
-// }
-
-type MongoDB struct {
-	Session *mgo.Session // Session
+type MongoDB interface {
+	//Insert(CollectionName string, docs ...interface{}) error
+	// db.C("notice").Find(bson.M{}).All(&notices)
+	// Get(id int) *Notice
+	// GetAll() []*Notice
+	// Find(band, title string, year int) []*Notice
+	// Add(a *Notice) (int, error)
+	// Update(a *Notice) error
+	// Delete(id int)
 }
 
-var Instantiated *MongoDB = nil
-
-// func InitDB() *MongoDB {
-// 	mongodb := config.MONGODB_HOST + ":" + config.MONGODB_PORT
-// 	session, err := mgo.Dial(mongodb)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	Instantiated = &MongoDB{Session: session}
-
-// 	return Instantiated
-// }
-
-// func (db *MongoDB) GetInstance() *mgo.Database {
-// 	s := db.Session.Clone()
-// 	defer s.Close()
-
-// 	return
-// }
-
-func InitMongoDB() gin.HandlerFunc {
+func InitDB() martini.Handler {
 	mongodb := config.MONGODB_HOST + ":" + config.MONGODB_PORT
 	session, err := mgo.Dial(mongodb)
 	if err != nil {
 		panic(err)
 	}
 
-	Instantiated = session
+	return func(c martini.Context) {
+		s := session.Clone()
+		c.Map(s.DB(config.NAMESPACE + ":" + "haru"))
 
-	return func(c *gin.Context) {
-		s := db.Session.Clone()
 		defer s.Close()
-
-		// Set example variable
-		c.Set("db", s.DB(config.NAMESPACE+":"+"haru"))
-
-		// before request
 		c.Next()
-
-		// after request
-		latency := time.Since(t)
-		log.Print(latency)
-
-		// access the status we are sending
-		status := c.Writer.Status()
-		log.Println(status)
 	}
-}
-
-func Close() {
-	Instantiated.Session.Close()
 }
 
 // type MyDoc map[string]interface{}

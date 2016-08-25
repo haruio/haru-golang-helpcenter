@@ -2,107 +2,80 @@ package main
 
 import (
 	"./src/controllers"
-
-	"log"
-	"net/http"
+	"./src/encoding"
+	"./src/models"
+	"./src/utility"
+	"github.com/go-martini/martini"
+	"github.com/martini-contrib/binding"
+	"github.com/martini-contrib/cors"
+	"github.com/martini-contrib/render"
+	// "log"
+	// "net/http"
 	"runtime"
-
-	"github.com/facebookgo/grace/gracehttp"
-	"github.com/gin-gonic/gin"
-	"github.com/itsjamie/gin-cors"
-
-	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/commonlog"
-	"bitbucket.org/makeusmobile/makeus-golang-framework/src/middleware/recovery"
 )
-
-func InitMiddleware(router *gin.Engine) {
-	router.Use(commonlog.Logger())  // logger
-	router.Use(recovery.Recovery()) // recover
-}
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	//Create AppContext(rabbitmq)
-	appC := handlers.AppContext{RabbitMQ.PublisherInit()}
-	defer RabbitMQ.Close()
+	martini.Env = martini.Prod
+	m := martini.Classic()
+	m.Use(render.Renderer())
+	m.Use(encoding.MapEncoder)
+	m.Use(models.InitDB())
+	m.Use(models.InitRabbitMQ())
+	//log.Fatal(http.ListenAndServe(":10600", m))
+	f := utility.InitLogger(m)
+	defer f.Close()
 
-	gin.SetMode(gin.ReleaseMode)
-
-	//Webframework gin-tonic Init
-	router := gin.New()
-	InitMiddleware(router)
-
-	router.Use(cors.Middleware(cors.Config{
-		Origins:         "*",
-		Methods:         "GET, PUT, POST, DELETE",
-		RequestHeaders:  "Application, Content-Type",
-		ExposedHeaders:  "Content-Length",
-		MaxAge:          50 * time.Second,
-		Credentials:     true,
-		ValidateHeaders: false,
+	m.Use(cors.Allow(&cors.Options{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE"},
+		AllowHeaders:     []string{"Application-Id", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
 	}))
 
-	v1 := router.Group("/1/notice")
-	{
-		v1.GET("/login", loginEndpoint)
-		v1.POST("/submit", submitEndpoint)
-		v1.POST("/read", readEndpoint)
-		v1.GET("/list", controllers.ReadListNotice)
-		v1.GET("/:id", controllers.ReadIdNotice)
-		v1.POST("/add", controllers.CreateNotice)
-		v1.PUT("/:id", controllers.UpdateNotice)
-		v1.DELETE("/:id", controllers.DeleteNotice)
-	}
+	m.Group("/1/notice", func(r martini.Router) {
+		r.Get("/list", controllers.ReadListNotice)
+		r.Get("/:id", controllers.ReadIdNotice)
+		r.Post("/add", binding.Json(controllers.Notice{}), controllers.CreateNotice)
+		r.Put("/:id", binding.Json(controllers.Notice{}), controllers.UpdateNotice)
+		r.Delete("/:id", binding.Json(controllers.Notice{}), controllers.DeleteNotice)
+	})
 
-	v2 := router.Group("/1/faq/category")
-	{
-		v2.GET("/list", controllers.ReadListFaqCategory)
-		v2.GET("/:id", controllers.ReadIdFaqCategory)
-		v2.GET("/count/:id", controllers.CountFaqCategory)
-		v2.POST("/add", controllers.CreateFaqCategory)
-		v2.PUT("/:id", controllers.UpdateFaqCategory)
-		v2.DELETE("/:id", controllers.DeleteFaqCategory)
-	}
+	m.Group("/1/faq/category", func(r martini.Router) {
+		r.Get("/list", controllers.ReadListFaqCategory)
+		r.Get("/:id", controllers.ReadIdFaqCategory)
+		r.Get("/count/:id", controllers.CountFaqCategory)
+		r.Post("/add", binding.Json(controllers.FaqCategory{}), controllers.CreateFaqCategory)
+		r.Put("/:id", binding.Json(controllers.FaqCategory{}), controllers.UpdateFaqCategory)
+		r.Delete("/:id", binding.Json(controllers.FaqCategory{}), controllers.DeleteFaqCategory)
+	})
 
-	v3 := router.Group("/1/faq")
-	{
-		v3.GET("/list", controllers.ReadListFaq)
-		v3.GET("/list/:category", controllers.ReadListCategoryFaq)
-		v3.GET("/:id", controllers.ReadIdFaq)
-		v3.POST("/add", controllers.CreateFaq)
-		v3.PUT("/:id", controllers.UpdateFaq)
-		v3.DELETE("/:id", controllers.DeleteFaq)
-	}
+	m.Group("/1/faq", func(r martini.Router) {
+		r.Get("/list", controllers.ReadListFaq)
+		r.Get("/list/:category", controllers.ReadListCategoryFaq)
+		r.Get("/:id", controllers.ReadIdFaq)
+		r.Post("/add", binding.Json(controllers.Faq{}), controllers.CreateFaq)
+		r.Put("/:id", binding.Json(controllers.Faq{}), controllers.UpdateFaq)
+		r.Delete("/:id", binding.Json(controllers.Faq{}), controllers.DeleteFaq)
+	})
 
-	v4 := router.Group("/1/qna")
-	{
-		v4.GET("/count", controllers.ReadCountQnA)
-		v4.GET("/list", controllers.ReadListQnA)
-		v4.GET("/list/:id", controllers.ReadListUserQnA)
-		v4.GET("/:id", controllers.ReadIdQnA)
-		v4.POST("/add", controllers.CreateQnA)
-		v4.POST("/comment/:id", controllers.AddcommentFaq)
-		v4.PUT("/:id", controllers.UpdateQnA)
-		v4.DELETE("/:id", controllers.DeleteQnA)
-	}
+	m.Group("/1/qna", func(r martini.Router) {
+		r.Get("/count", controllers.ReadCountQnA)
+		r.Get("/list", controllers.ReadListQnA)
+		r.Get("/list/:id", controllers.ReadListUserQnA)
+		r.Get("/:id", controllers.ReadIdQnA)
+		r.Post("/add", binding.Json(controllers.QnA{}), controllers.CreateQnA)
+		r.Post("/comment/:id", binding.Json(controllers.Comment{}), controllers.AddcommentFaq)
+		r.Put("/:id", binding.Json(controllers.QnA{}), controllers.UpdateQnA)
+		r.Delete("/:id", binding.Json(controllers.QnA{}), controllers.DeleteQnA)
+	})
 
-	v5 := router.Group("/1/email")
-	{
-		v5.POST("/send", controllers.SendEmail)
-		v5.POST("/export", controllers.ExportEmail)
-	}
+	m.Group("/1/email", func(r martini.Router) {
+		r.Post("/send", binding.Json(controllers.Email{}), controllers.SendEmail)
+		r.Post("/export", binding.Json(controllers.MongoExport{}), controllers.ExportEmail)
+	})
 
-	err := gracehttp.Serve(
-		&http.Server{
-			Addr:           ":9090",
-			Handler:        router,
-			ReadTimeout:    5 * time.Second,
-			WriteTimeout:   5 * time.Second,
-			MaxHeaderBytes: 1 << 20,
-		})
-
-	if err != nil {
-		log.Println(err)
-	}
+	m.Run()
 }
